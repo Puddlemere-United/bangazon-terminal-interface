@@ -56,7 +56,12 @@ class MainMenuController
             order = OrderController.new
             # Complete an order
         when "7"
+            if $active_customer
             product = ProductController.new
+            product.gather_all_products
+            else
+                puts "you need an active customer!"
+            end
             # Remove customer product
         when "8"
             product = ProductController.new

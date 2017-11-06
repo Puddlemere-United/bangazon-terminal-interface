@@ -3,7 +3,7 @@ require 'sqlite3'
 class Product 
     attr_accessor :price, :quantity, :title, :description
 
-    def initialize(new_product_hash)
+    def initialize(**new_product_hash)
         @price = new_product_hash[:info_price]
         @quantity = new_product_hash[:info_quantity]
         @title = new_product_hash[:info_title]
@@ -18,6 +18,8 @@ class Product
             db.execute("INSERT INTO Products(Price, Quantity, Title, Description, Seller_Id) VALUES ('#{@price}', '#{@quantity}', '#{@title}', '#{@description}', #{$active_customer[0]});")
             db.commit
 
+            # WHERE seller_Id = active_customer
+
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
             db.rollback
@@ -25,13 +27,36 @@ class Product
         db.close
     end
 
+    def get_products_via_active_customer
+        begin
+        db = SQLite3::Database.open("../db/test_database_sprint2.sqlite")
+        db.transaction
+        db.execute("SELECT * FROM Products WHERE Seller_Id = #{$active_customer[0]};")
+
+        rescue SQLite3::Exception => e
+            p "Exception with database query: #{e}"
+        end
+    end
+
     def get_all_products
         begin
-            db = SQLite3::Database.open("../../db/test_database_sprint2.sqlite")
+            db = SQLite3::Database.open("../db/test_database_sprint2.sqlite")
             db.transaction
             db.execute("SELECT * FROM Products;")
 
         rescue SQLite3::Exception => e
+            p "Exception with database query: #{e}"
+        end
+    end
+
+    def delete_single_product(delete_user_product)
+# puts delete_user_product
+        begin
+            db = SQLite3::Database.open("../db/test_database_sprint2.sqlite")
+            db.transaction
+            db.execute("DELETE FROM Products WHERE Product_Id = #{delete_user_product}")
+
+        rescue SQLite3::Exception => e 
             p "Exception with database query: #{e}"
         end
     end
