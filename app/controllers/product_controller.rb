@@ -69,6 +69,7 @@ class ProductController
 
     def gather_all_products
         @product_t = @product_test.get_products_via_active_customer
+        puts @product_t.class
         @product_t.each_with_index do |value, index|
             puts "#{index+1}. #{value[4]}"
         end

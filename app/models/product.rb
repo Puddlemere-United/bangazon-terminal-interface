@@ -1,7 +1,7 @@
 require 'sqlite3'
 
 class Product 
-    attr_accessor :price, :quantity, :title, :description
+    attr_accessor :price, :quantity, :title, :description, :delete_user_product
 
     def initialize(**new_product_hash)
         @price = new_product_hash[:info_price]
@@ -20,19 +20,19 @@ class Product
 
             # WHERE seller_Id = active_customer
 
+            db.close
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
-            db.rollback
         end
-        db.close
     end
 
     def get_products_via_active_customer
         begin
         db = SQLite3::Database.open("../db/test_database_sprint2.sqlite")
-        db.transaction
-        db.execute("SELECT * FROM Products WHERE Seller_Id = #{$active_customer[0]};")
+        customer_product = db.execute("SELECT * FROM Products WHERE Seller_Id = #{$active_customer[0]};")
 
+        db.close
+        return customer_product
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
         end
@@ -44,18 +44,25 @@ class Product
             db.transaction
             db.execute("SELECT * FROM Products;")
 
+            db.close
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
         end
     end
 
     def delete_single_product(delete_user_product)
-# puts delete_user_product
+
+    puts delete_user_product
         begin
             db = SQLite3::Database.open("../db/test_database_sprint2.sqlite")
+            
             db.transaction
+        
             db.execute("DELETE FROM Products WHERE Product_Id = #{delete_user_product}")
+            db.commit
 
+            db.close
+         
         rescue SQLite3::Exception => e 
             p "Exception with database query: #{e}"
         end
@@ -67,6 +74,7 @@ class Product
             db.transaction
             db.execute("SELECT * FROM Products where Product_Id = #{custId};")
 
+            db.close
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
         end
@@ -78,6 +86,7 @@ class Product
             db.transaction
             db.execute("UPDATE Products SET '#{colName}' = 'kite' WHERE Product_Id = #{prodId}")
 
+            db.close
         rescue SQLite3::Exception => e
             p "Exception with database query: #{e}"
         end
