@@ -17,7 +17,7 @@ In order to get this running on your system, just follow the below steps. Note t
 - Clone down this repository, which will create a new directory for this project on your system
 - Within the terminal, CD into this newly created directory
 - Navigate to the ``` db ``` sub-directory
-- Run the following command to initialize the database ``` ruby database.rb ```
+- Run the following command to initialize the database ``` ruby test_database_sprint2.rb ```
     * The database now exists in the database_sprint2.sqlite file!
     * Note: there is also a test initialization file that will create a test database for you if you'd like to run that as    
     well, they both exist within this ``` db ``` directory.
